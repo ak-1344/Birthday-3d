@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Float, Html } from '@react-three/drei'
 import * as THREE from 'three'
+import birthdayMusic from '/birthday-music.mp3?url'
 
 // Seeded random for consistent confetti generation with better distribution
 function seededRandom(seed) {
@@ -58,12 +59,40 @@ function Table() {
 
 // Gift box on table
 function GiftBox({ position, size = [0.25, 0.25, 0.25], color = "#e74c3c", ribbonColor = "#ffd700" }) {
+  const [hovered, setHovered] = useState(false)
+  const [clicked, setClicked] = useState(false)
+  const groupRef = useRef()
+  
+  useFrame((state) => {
+    if (groupRef.current && hovered) {
+      groupRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * 3) * 0.02
+    } else if (groupRef.current) {
+      groupRef.current.position.y = position[1]
+    }
+  })
+
+  const handleClick = (e) => {
+    e.stopPropagation()
+    setClicked(true)
+    setTimeout(() => setClicked(false), 3000)
+  }
+
   return (
-    <group position={position}>
+    <group 
+      ref={groupRef}
+      position={position}
+      onClick={handleClick}
+      onPointerOver={() => setHovered(true)}
+      onPointerOut={() => setHovered(false)}
+    >
       {/* Box body */}
       <mesh position={[0, size[1] / 2, 0]} castShadow receiveShadow>
         <boxGeometry args={size} />
-        <meshStandardMaterial color={color} roughness={0.4} metalness={0.1} />
+        <meshStandardMaterial 
+          color={hovered ? new THREE.Color(color).multiplyScalar(1.2) : color} 
+          roughness={0.4} 
+          metalness={0.1} 
+        />
       </mesh>
       
       {/* Ribbon horizontal */}
@@ -91,6 +120,75 @@ function GiftBox({ position, size = [0.25, 0.25, 0.25], color = "#e74c3c", ribbo
         <boxGeometry args={[0.08, 0.02, 0.04]} />
         <meshStandardMaterial color={ribbonColor} roughness={0.2} />
       </mesh>
+
+      {/* Clickable message popup */}
+      {clicked && (
+        <Html
+          position={[0, size[1] + 0.3, 0]}
+          center
+          distanceFactor={1}
+          style={{
+            pointerEvents: 'none',
+            userSelect: 'none'
+          }}
+        >
+          <div
+            style={{
+              position: 'relative',
+              background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+              color: 'white',
+              padding: '12px 24px',
+              borderRadius: '16px',
+              fontSize: '68px',
+              fontWeight: 'bold',
+              fontFamily: 'Georgia, serif',
+              boxShadow: '0 4px 15px rgba(245, 87, 108, 0.5)',
+              whiteSpace: 'nowrap',
+              animation: 'giftBounce 0.5s ease-out, giftFade 3s ease-in-out',
+              border: '2px solid rgba(255, 255, 255, 0.4)'
+            }}
+          >
+            🎁 Getting greedy huh??
+            {/* Speech bubble tail */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: '-8px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: '0',
+                height: '0',
+                borderLeft: '8px solid transparent',
+                borderRight: '8px solid transparent',
+                borderTop: '8px solid #f5576c'
+              }}
+            />
+          </div>
+          <style>
+            {`
+              @keyframes giftBounce {
+                0% { transform: scale(0) translateY(20px); opacity: 0; }
+                50% { transform: scale(1.1) translateY(-5px); }
+                100% { transform: scale(1) translateY(0); opacity: 1; }
+              }
+              @keyframes giftFade {
+                0%, 80% { opacity: 1; }
+                100% { opacity: 0; }
+              }
+            `}
+          </style>
+        </Html>
+      )}
+
+      {/* Hover glow effect */}
+      {hovered && !clicked && (
+        <pointLight 
+          position={[0, size[1] / 2, 0]} 
+          color={ribbonColor} 
+          intensity={0.5} 
+          distance={0.5} 
+        />
+      )}
     </group>
   )
 }
@@ -306,7 +404,7 @@ function Shelf({ position }) {
 }
 
 // Small Music System
-function SmallMusicSystem({ position, audioRef, isPlaying, setIsPlaying }) {
+function SmallMusicSystem({ position, audioRef, isPlaying, setIsPlaying, showMusicButton, setShowMusicButton }) {
   const [hovered, setHovered] = useState(false)
   
   const handleClick = (e) => {
@@ -314,7 +412,7 @@ function SmallMusicSystem({ position, audioRef, isPlaying, setIsPlaying }) {
     
     if (!audioRef.current) {
       // Initialize audio on first click
-      audioRef.current = new Audio('/birthday-music.mp3')
+      audioRef.current = new Audio(birthdayMusic)
       audioRef.current.loop = true
       audioRef.current.volume = 0.5
     }
@@ -328,6 +426,14 @@ function SmallMusicSystem({ position, audioRef, isPlaying, setIsPlaying }) {
       })
       setIsPlaying(true)
     }
+  }
+  
+  const handleStopMusic = () => {
+    if (audioRef.current) {
+      audioRef.current.pause()
+      setIsPlaying(false)
+    }
+    setShowMusicButton(false)
   }
   
   return (
@@ -367,6 +473,42 @@ function SmallMusicSystem({ position, audioRef, isPlaying, setIsPlaying }) {
           <ringGeometry args={[0.15, 0.17, 32]} />
           <meshBasicMaterial color="#ffffff" transparent opacity={0.5} />
         </mesh>
+      )}
+      
+      {/* Stop music button overlay */}
+      {showMusicButton && (
+        <Html position={[0, 0.6, 0]} center>
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              handleStopMusic()
+            }}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: 'rgba(255, 68, 68, 0.9)',
+              color: 'white',
+              border: '2px solid rgba(255, 255, 255, 0.3)',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              fontSize: '12px',
+              fontFamily: 'Georgia, serif',
+              fontWeight: 'bold',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+              transition: 'all 0.3s ease',
+              whiteSpace: 'nowrap'
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = 'rgba(255, 30, 30, 1)'
+              e.target.style.transform = 'scale(1.05)'
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = 'rgba(255, 68, 68, 0.9)'
+              e.target.style.transform = 'scale(1)'
+            }}
+          >
+            🔇 Stop Music
+          </button>
+        </Html>
       )}
     </group>
   )
@@ -658,7 +800,30 @@ function PartyLights() {
 
 function Environment({ showConfetti = false, onLetterClick, letterClicked = false, isLitUp = false }) {
   const audioRef = useRef(null)
-  const [isPlaying, setIsPlaying] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(true)
+  const [showMusicButton, setShowMusicButton] = useState(true)
+  
+  // Auto-play music on component mount
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!audioRef.current) {
+        audioRef.current = new Audio(birthdayMusic)
+        audioRef.current.loop = true
+        audioRef.current.volume = 0.5
+      }
+      audioRef.current.play().catch(err => {
+        console.log('Audio autoplay failed:', err)
+        setIsPlaying(false)
+      })
+    }, 1000) // Small delay to ensure user interaction
+    
+    return () => {
+      clearTimeout(timer)
+      if (audioRef.current) {
+        audioRef.current.pause()
+      }
+    }
+  }, [])
   
   // Lighting configurations
   const lightConfig = isLitUp ? {
@@ -737,9 +902,9 @@ function Environment({ showConfetti = false, onLetterClick, letterClicked = fals
       <Shelf position={[5.85, 1.5, 2]} />
       
       {/* Music System stack in left-back corner */}
-      <SmallMusicSystem position={[-5.4, -0.95, -8.4]} audioRef={audioRef} isPlaying={isPlaying} setIsPlaying={setIsPlaying} />
-      <SmallMusicSystem position={[-4.9, -0.95, -8.7]} audioRef={audioRef} isPlaying={isPlaying} setIsPlaying={setIsPlaying} />
-      <SmallMusicSystem position={[-5.15, -0.45, -8.55]} audioRef={audioRef} isPlaying={isPlaying} setIsPlaying={setIsPlaying} />
+      <SmallMusicSystem position={[-5.4, -0.95, -8.4]} audioRef={audioRef} isPlaying={isPlaying} setIsPlaying={setIsPlaying} showMusicButton={showMusicButton} setShowMusicButton={setShowMusicButton} />
+      <SmallMusicSystem position={[-4.9, -0.95, -8.7]} audioRef={audioRef} isPlaying={isPlaying} setIsPlaying={setIsPlaying} showMusicButton={false} setShowMusicButton={() => {}} />
+      <SmallMusicSystem position={[-5.15, -0.45, -8.55]} audioRef={audioRef} isPlaying={isPlaying} setIsPlaying={setIsPlaying} showMusicButton={false} setShowMusicButton={() => {}} />
       
       {/* Confetti (only when candles blown) */}
       {showConfetti && <Confetti count={80} />}
