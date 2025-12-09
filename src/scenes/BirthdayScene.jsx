@@ -11,6 +11,7 @@ import BlowButton from '../components/BlowButton'
 import IntroOverlay from '../components/IntroOverlay'
 import LetterZoom from '../components/LetterZoom'
 import LightToggle from '../components/LightToggle'
+import MusicToggle from '../components/MusicToggle'
 
 function LoadingScreen() {
   return (
@@ -29,6 +30,7 @@ function BirthdayScene() {
   const [letterClicked, setLetterClicked] = useState(false)
   const [isLitUp, setIsLitUp] = useState(false)
   const cakeRef = useRef()
+  const audioRef = useRef(null)
 
   const handleIntroComplete = () => {
     setIntroComplete(true)
@@ -126,6 +128,9 @@ function BirthdayScene() {
 
       {/* Light toggle button */}
       <LightToggle onToggle={setIsLitUp} />
+
+      {/* Music toggle button */}
+      <MusicToggle audioRef={audioRef} />
 
       {/* Blow button UI */}
       {introComplete && (

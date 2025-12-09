@@ -799,32 +799,6 @@ function PartyLights() {
 }
 
 function Environment({ showConfetti = false, onLetterClick, letterClicked = false, isLitUp = false }) {
-  const audioRef = useRef(null)
-  const [isPlaying, setIsPlaying] = useState(true)
-  const [showMusicButton, setShowMusicButton] = useState(true)
-  
-  // Auto-play music on component mount
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (!audioRef.current) {
-        audioRef.current = new Audio(birthdayMusic)
-        audioRef.current.loop = true
-        audioRef.current.volume = 0.5
-      }
-      audioRef.current.play().catch(err => {
-        console.log('Audio autoplay failed:', err)
-        setIsPlaying(false)
-      })
-    }, 1000) // Small delay to ensure user interaction
-    
-    return () => {
-      clearTimeout(timer)
-      if (audioRef.current) {
-        audioRef.current.pause()
-      }
-    }
-  }, [])
-  
   // Lighting configurations
   const lightConfig = isLitUp ? {
     ambient: { intensity: 1.5, color: "#ffffff" },
@@ -900,11 +874,6 @@ function Environment({ showConfetti = false, onLetterClick, letterClicked = fals
       {/* Decorative shelves on side walls */}
       <Shelf position={[-5.85, 1.5, -3]} />
       <Shelf position={[5.85, 1.5, 2]} />
-      
-      {/* Music System stack in left-back corner */}
-      <SmallMusicSystem position={[-5.4, -0.95, -8.4]} audioRef={audioRef} isPlaying={isPlaying} setIsPlaying={setIsPlaying} showMusicButton={showMusicButton} setShowMusicButton={setShowMusicButton} />
-      <SmallMusicSystem position={[-4.9, -0.95, -8.7]} audioRef={audioRef} isPlaying={isPlaying} setIsPlaying={setIsPlaying} showMusicButton={false} setShowMusicButton={() => {}} />
-      <SmallMusicSystem position={[-5.15, -0.45, -8.55]} audioRef={audioRef} isPlaying={isPlaying} setIsPlaying={setIsPlaying} showMusicButton={false} setShowMusicButton={() => {}} />
       
       {/* Confetti (only when candles blown) */}
       {showConfetti && <Confetti count={80} />}
