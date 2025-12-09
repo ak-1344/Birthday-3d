@@ -16,8 +16,6 @@ export const data = {
   // Supported formats: .jpg, .jpeg, .png, .webp
   photoCount: 6,
 
-  // Optional: Cake tiers
-  cakeTiers: 3,
 
   // Optional: Number of candles (defaults to age if not specified)
   candleCount: 5,

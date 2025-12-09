@@ -1,25 +1,50 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
 function BlowButton({ onBlow, disabled = false, candlesExtinguished = false }) {
   const [isBlowing, setIsBlowing] = useState(false)
   const [showWish, setShowWish] = useState(false)
+  const [timeRemaining, setTimeRemaining] = useState(60)
+  const [timerActive, setTimerActive] = useState(true)
+
+  // 60-second countdown timer
+  useEffect(() => {
+    if (!timerActive || candlesExtinguished) return
+
+    const interval = setInterval(() => {
+      setTimeRemaining((prev) => {
+        if (prev <= 1) {
+          setTimerActive(false)
+          // Auto-blow candles when timer reaches 0
+          handleBlow()
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [timerActive, candlesExtinguished])
 
   const handleBlow = () => {
     if (disabled || isBlowing) return
     
     setIsBlowing(true)
+    setTimerActive(false) // Stop the timer
     
     // Trigger the blow animation
     if (onBlow) {
       onBlow()
     }
 
-    // Show wish message after candles are extinguished
+    // Reset blowing state after animation
     setTimeout(() => {
       setIsBlowing(false)
-      setShowWish(true)
     }, 1500)
+  }
+
+  const handleGiftBoxClick = () => {
+    setShowWish(true)
   }
 
   return (
@@ -29,7 +54,7 @@ function BlowButton({ onBlow, disabled = false, candlesExtinguished = false }) {
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
+            exit={{ opacity: 0, scale: 0.5 }}
             transition={{ duration: 0.5 }}
             style={{
               position: 'fixed',
@@ -56,6 +81,21 @@ function BlowButton({ onBlow, disabled = false, candlesExtinguished = false }) {
             >
               Make a wish and blow the candles! 🌟
             </motion.p>
+
+            {/* Timer Display */}
+            <motion.div
+              style={{
+                color: 'white',
+                fontSize: '16px',
+                marginBottom: '10px',
+                textShadow: '0 2px 8px rgba(0,0,0,0.5)',
+                fontFamily: 'monospace'
+              }}
+              animate={{ scale: timeRemaining <= 10 ? [1, 1.1, 1] : 1 }}
+              transition={{ duration: 0.5, repeat: timeRemaining <= 10 ? Infinity : 0 }}
+            >
+              ⏱️ {timeRemaining}s
+            </motion.div>
             
             <motion.button
               onClick={handleBlow}
@@ -102,6 +142,105 @@ function BlowButton({ onBlow, disabled = false, candlesExtinguished = false }) {
                   Blow Candles
                 </>
               )}
+            </motion.button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Gift Box - appears in corner after candles are blown */}
+      <AnimatePresence>
+        {candlesExtinguished && (
+          <motion.div
+            initial={{ 
+              bottom: '40px',
+              left: '50%',
+              x: '-50%',
+              scale: 1
+            }}
+            animate={{ 
+              bottom: '30px',
+              left: 'auto',
+              right: '30px',
+              x: 0,
+              scale: 1
+            }}
+            transition={{ 
+              duration: 1,
+              type: 'spring',
+              stiffness: 100,
+              damping: 15
+            }}
+            style={{
+              position: 'fixed',
+              zIndex: 100,
+              pointerEvents: 'auto'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <motion.button
+              onClick={handleGiftBoxClick}
+              whileHover={{ scale: 1.15, rotate: [0, -10, 10, 0] }}
+              whileTap={{ scale: 0.9 }}
+              animate={{
+                y: [0, -10, 0],
+                rotate: [0, 5, -5, 0]
+              }}
+              transition={{
+                y: { duration: 2, repeat: Infinity, ease: 'easeInOut' },
+                rotate: { duration: 3, repeat: Infinity, ease: 'easeInOut' }
+              }}
+              style={{
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                border: '3px solid #ffd700',
+                borderRadius: '20px',
+                padding: '20px',
+                fontSize: '50px',
+                cursor: 'pointer',
+                boxShadow: '0 8px 30px rgba(102, 126, 234, 0.6)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: '80px',
+                height: '80px',
+                position: 'relative',
+                overflow: 'hidden'
+              }}
+            >
+              <motion.span
+                animate={{
+                  scale: [1, 1.2, 1]
+                }}
+                transition={{
+                  duration: 1.5,
+                  repeat: Infinity,
+                  ease: 'easeInOut'
+                }}
+              >
+                🎁
+              </motion.span>
+              
+              {/* Sparkle effect */}
+              <motion.div
+                animate={{
+                  opacity: [0, 1, 0],
+                  scale: [0.5, 1.5, 0.5]
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: 'easeInOut'
+                }}
+                style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  fontSize: '70px',
+                  pointerEvents: 'none'
+                }}
+              >
+                ✨
+              </motion.div>
             </motion.button>
           </motion.div>
         )}

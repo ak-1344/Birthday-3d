@@ -40,8 +40,10 @@ function BirthdayScene() {
   }
 
   const handleBlowCandles = () => {
-    // This will trigger the blow animation in the Cake component
-    setCandlesBlown(true)
+    // Call the cake's blowCandles method directly
+    if (cakeRef.current && cakeRef.current.blowCandles) {
+      cakeRef.current.blowCandles()
+    }
   }
 
   const handleLetterClick = (e) => {

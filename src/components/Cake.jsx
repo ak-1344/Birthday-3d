@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useImperativeHandle, forwardRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { data } from '../data'
 
@@ -133,7 +133,7 @@ function SmokeParticle({ delay, speed, offset, startY }) {
   )
 }
 
-function Cake({ position = [0, 0, 0], onCandlesBlown }) {
+function Cake({ position = [0, 0, 0], onCandlesBlown }, ref) {
   // Get candle count from data (defaults to age, or 5 if not set)
   const age = data.personAge || 5
   const candleCount = data.candleCount || age
@@ -181,6 +181,11 @@ function Cake({ position = [0, 0, 0], onCandlesBlown }) {
       }, 1500)
     }
   }
+
+  // Expose blowCandles method to parent via ref
+  useImperativeHandle(ref, () => ({
+    blowCandles
+  }))
 
   return (
     <group position={position}>
@@ -328,18 +333,8 @@ function Cake({ position = [0, 0, 0], onCandlesBlown }) {
           isLit={candlesLit[index]}
         />
       ))}
-      
-      {/* Blow button trigger area - invisible */}
-      <mesh
-        position={[0, 0.5, 0]}
-        onClick={blowCandles}
-        visible={false}
-      >
-        <boxGeometry args={[2, 1.5, 2]} />
-        <meshBasicMaterial transparent opacity={0} />
-      </mesh>
     </group>
   )
 }
 
-export default Cake
+export default forwardRef(Cake)

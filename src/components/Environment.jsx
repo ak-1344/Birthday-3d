@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Float } from '@react-three/drei'
+import { Float, Html } from '@react-three/drei'
 import * as THREE from 'three'
 
 // Seeded random for consistent confetti generation with better distribution
@@ -153,6 +153,61 @@ function BirthdayLetter({ position, onClick }) {
         <planeGeometry args={[0.06, 0.06]} />
         <meshStandardMaterial color="#f5f0e8" roughness={0.5} side={THREE.DoubleSide} />
       </mesh>
+
+      {/* "Read Me" Speech Bubble */}
+      <Html
+        position={[0.15, 0.25, 0.02]}
+        center
+        distanceFactor={1}
+        style={{
+          pointerEvents: 'none',
+          userSelect: 'none'
+        }}
+      >
+        <div
+          style={{
+            position: 'relative',
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            color: 'white',
+            padding: '18px 36px',
+            borderRadius: '20px',
+            fontSize: '44px',
+            fontWeight: 'bold',
+            fontFamily: 'Georgia, serif',
+            boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+            whiteSpace: 'nowrap',
+            animation: 'bounce 2s ease-in-out infinite, pulse 2s ease-in-out infinite',
+            border: '2px solid rgba(255, 255, 255, 0.3)'
+          }}
+        >
+          📖 Read Me
+          {/* Speech bubble tail */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '-8px',
+              left: '20px',
+              width: '0',
+              height: '0',
+              borderLeft: '8px solid transparent',
+              borderRight: '8px solid transparent',
+              borderTop: '8px solid #764ba2'
+            }}
+          />
+        </div>
+        <style>
+          {`
+            @keyframes bounce {
+              0%, 100% { transform: translateY(0px); }
+              50% { transform: translateY(-8px); }
+            }
+            @keyframes pulse {
+              0%, 100% { opacity: 0.9; }
+              50% { opacity: 1; }
+            }
+          `}
+        </style>
+      </Html>
     </group>
   )
 }
