@@ -5,7 +5,7 @@
 
 export const data = {
   // Person's Information
-  personName: 'Muskan',
+  personName: 'Alice',
   personAge: 21,
 
   // Custom Birthday Message (appears on intro overlay)

@@ -4,54 +4,57 @@ This guide helps you personalize the Birthday 3D website for your special someon
 
 ## Quick Setup (5 minutes)
 
-### Step 1: Copy the Template
-```bash
-cp .env.example .env
-```
+### Step 1: Open the Configuration File
 
-### Step 2: Personalize the `.env` File
+Open `src/data.ts` in your code editor.
 
-Open `.env` in your text editor and update these values:
+### Step 2: Personalize Your Settings
 
-```env
-# Basic Information
-VITE_PERSON_NAME=Alex              # Change to recipient's name
-VITE_PERSON_AGE=25                 # Change to recipient's age
+Update the values in the `data` object:
 
-# Custom Message
-VITE_BIRTHDAY_MESSAGE=Wishing you a day filled with happiness and a year filled with joy!
+```typescript
+export const data = {
+  // Person's Information
+  personName: 'Alex',              // Change to recipient's name
+  personAge: 25,                   // Change to recipient's age
 
-# Photos
-VITE_PHOTO_COUNT=6                 # How many photos you'll add
+  // Custom Birthday Message (appears on intro overlay)
+  birthdayMessage: 'Wishing you a day filled with happiness and a year filled with joy!',
+
+  // Photo Configuration
+  // Add your photos to src/assets/ folder named as: photo1.jpg, photo2.jpg, photo3.jpg, etc.
+  // Supported formats: .jpg, .jpeg, .png, .webp
+  photoCount: 6,                   // How many photos you'll add (max 11)
+
+  // Optional: Number of candles (defaults to age if not specified)
+  candleCount: 5,
+};
 ```
 
 ### Step 3: Add Photos
 
 1. Place your photos in `src/assets/`
 2. Name them: `photo1.jpg`, `photo2.jpg`, `photo3.jpg`, etc.
-3. Supported formats: `.jpg`, `.png`, `.webp`
+3. Supported formats: `.jpg`, `.jpeg`, `.png`, `.webp`
 4. See `src/assets/README.md` for detailed instructions
 
-### Step 4: Restart the Server
+### Step 4: Save and View
 
-```bash
-npm run dev
-```
+Save the file - Vite will automatically reload your changes!
 
-Visit `http://localhost:5173` to see your personalized birthday site! 🎂
+Visit `http://localhost:5173` (or the port shown in your terminal) to see your personalized birthday site! 🎂
 
 ---
 
-## Environment Variables Reference
+## Configuration Reference
 
-| Variable | Description | Example | Required |
-|----------|-------------|---------|----------|
-| `VITE_PERSON_NAME` | Birthday person's name | `Sarah` | Yes |
-| `VITE_PERSON_AGE` | Person's age (sets candle count) | `25` | Yes |
-| `VITE_BIRTHDAY_MESSAGE` | Custom intro message | `Happy Birthday!` | Yes |
-| `VITE_PHOTO_COUNT` | Number of photos to display (max 8) | `6` | Yes |
-| `VITE_CAKE_TIERS` | Number of cake layers | `3` | No (default: 3) |
-| `VITE_CANDLE_COUNT` | Override candle count | `5` | No (default: uses age) |
+| Property | Description | Type | Example | Required |
+|----------|-------------|------|---------|----------|
+| `personName` | Birthday person's name | string | `'Sarah'` | Yes |
+| `personAge` | Person's age (sets default candle count) | number | `25` | Yes |
+| `birthdayMessage` | Custom intro message | string | `'Happy Birthday!'` | Yes |
+| `photoCount` | Number of photos to display (max 11) | number | `6` | Yes |
+| `candleCount` | Override candle count | number | `5` | No (defaults to age) |
 
 ## Advanced Customization
 
@@ -79,23 +82,33 @@ Edit individual component files to customize colors:
 
 ### Customizing the Cake
 
-**Change Cake Tiers:**
-```env
-VITE_CAKE_TIERS=4  # Makes a 4-tier cake
-```
+The cake automatically uses the age from `personAge` in `src/data.ts` to determine candle count.
 
 **Custom Candle Count:**
-```env
-VITE_CANDLE_COUNT=10  # Always show 10 candles, regardless of age
+```typescript
+candleCount: 10  // Always show 10 candles, regardless of age
 ```
 
 ### Photo Configuration
 
-**Maximum Photos**: Up to 8 photos can be displayed in the scene
+**Maximum Photos**: Up to 11 photos can be displayed in the scene
+- Photos 1-5: Back wall (zigzag pattern)
+- Photos 6-8: Left wall
+- Photos 9-11: Right wall
 
 **Photo Positions**: Photos are arranged in a circular gallery around the scene
 
 **Placeholder Colors**: If photos are missing, colorful placeholders appear
+
+### Customizing Messages
+
+Edit the birthday message in `src/data.ts`:
+
+```typescript
+birthdayMessage: 'Your custom message here! Can be multiple lines if needed.',
+```
+
+You can also edit the letter content in `src/components/LetterZoom.jsx` for the birthday letter that appears when clicked.
 
 ## Troubleshooting
 
@@ -103,35 +116,36 @@ VITE_CANDLE_COUNT=10  # Always show 10 candles, regardless of age
 
 1. ✅ Check file names: `photo1.jpg`, `photo2.jpg`, etc.
 2. ✅ Verify files are in `src/assets/` folder
-3. ✅ Restart dev server after adding photos
+3. ✅ Check `photoCount` in `src/data.ts` matches number of photos
 4. ✅ Check browser console for loading errors
 
 ### Candles Not Matching Age?
 
-- Make sure `VITE_PERSON_AGE` is a number (no quotes)
-- If using `VITE_CANDLE_COUNT`, it overrides the age
+- Make sure `personAge` is a number (no quotes)
+- If using `candleCount`, it overrides the age
 
-### Environment Variables Not Working?
+### Changes Not Appearing?
 
-1. ✅ File must be named exactly `.env` (not `.env.txt`)
-2. ✅ Variables must start with `VITE_`
-3. ✅ Restart dev server after changing `.env`
-4. ✅ No spaces around `=` sign
+1. ✅ Make sure you saved `src/data.ts`
+2. ✅ Check the terminal for any build errors
+3. ✅ Hard refresh browser (Ctrl+Shift+R or Cmd+Shift+R)
+4. ✅ Clear browser cache if needed
 
 ## Deployment Checklist
 
 Before deploying your personalized site:
 
-- [ ] `.env` file is configured with correct information
+- [ ] `src/data.ts` is configured with correct information
 - [ ] All photos are added to `src/assets/`
 - [ ] Tested locally with `npm run dev`
 - [ ] Built successfully with `npm run build`
-- [ ] Environment variables configured in hosting platform
-- [ ] Photos are included in the deployment
+- [ ] All changes committed to your repository
 
 ## Security Note
 
-⚠️ **Important**: The `.env` file is in `.gitignore` and won't be committed to Git. This keeps personal information private. When deploying, you'll need to configure environment variables in your hosting platform's dashboard.
+✨ **Good News**: Since we're using `src/data.ts` instead of environment variables, all your customization is part of the code and will be automatically included when you deploy!
+
+No need to configure environment variables separately on your hosting platform.
 
 ## Need Help?
 
@@ -145,31 +159,34 @@ Before deploying your personalized site:
 ## Examples
 
 ### Example 1: Minimalist (3 photos, simple message)
-```env
-VITE_PERSON_NAME=Emma
-VITE_PERSON_AGE=30
-VITE_BIRTHDAY_MESSAGE=Happy 30th Birthday!
-VITE_PHOTO_COUNT=3
-VITE_CAKE_TIERS=2
+```typescript
+export const data = {
+  personName: 'Emma',
+  personAge: 30,
+  birthdayMessage: 'Happy 30th Birthday!',
+  photoCount: 3,
+};
 ```
 
-### Example 2: Extravagant (8 photos, multi-tier cake)
-```env
-VITE_PERSON_NAME=Michael
-VITE_PERSON_AGE=40
-VITE_BIRTHDAY_MESSAGE=Celebrating 40 amazing years! Here's to many more adventures together!
-VITE_PHOTO_COUNT=8
-VITE_CAKE_TIERS=4
-VITE_CANDLE_COUNT=40
+### Example 2: Extravagant (8 photos, custom candles)
+```typescript
+export const data = {
+  personName: 'Michael',
+  personAge: 40,
+  birthdayMessage: 'Celebrating 40 amazing years! Here\'s to many more adventures together!',
+  photoCount: 8,
+  candleCount: 40,
+};
 ```
 
 ### Example 3: Child's Birthday
-```env
-VITE_PERSON_NAME=Sophie
-VITE_PERSON_AGE=7
-VITE_BIRTHDAY_MESSAGE=Happy 7th Birthday Princess! 🎂👑
-VITE_PHOTO_COUNT=5
-VITE_CAKE_TIERS=3
+```typescript
+export const data = {
+  personName: 'Sophie',
+  personAge: 7,
+  birthdayMessage: 'Happy 7th Birthday Princess! 🎂👑',
+  photoCount: 5,
+};
 ```
 
 ---

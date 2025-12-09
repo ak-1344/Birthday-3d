@@ -4,6 +4,9 @@ import { Html, Text } from '@react-three/drei'
 import * as THREE from 'three'
 import { data } from '../data'
 
+// Import all photos dynamically
+const importedPhotos = import.meta.glob('../assets/photo*.{jpg,jpeg,png,webp}', { eager: true, as: 'url' })
+
 function Photo({ position, rotation = [0, 0, 0], caption, index, onZoom, isZoomed, imageUrl }) {
   const groupRef = useRef()
   const frameRef = useRef()
@@ -137,18 +140,31 @@ function ZoomedPhoto({ photo, onClose }) {
           style={{
             width: '100%',
             height: '300px',
-            background: photo.imageUrl 
-              ? `url(${photo.imageUrl}) center/cover` 
-              : `linear-gradient(45deg, ${photo.color}, ${photo.colorAlt})`,
+            background: !photo.imageUrl ? `linear-gradient(45deg, ${photo.color}, ${photo.colorAlt})` : 'transparent',
             borderRadius: '12px',
             marginBottom: '20px',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '60px'
+            fontSize: '60px',
+            overflow: 'hidden',
+            position: 'relative'
           }}
         >
-          {!photo.imageUrl && '📷'}
+          {photo.imageUrl ? (
+            <img 
+              src={photo.imageUrl} 
+              alt={photo.caption}
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                borderRadius: '12px'
+              }}
+            />
+          ) : (
+            '📷'
+          )}
         </div>
         <h2 style={{ 
           marginBottom: '15px', 
@@ -260,13 +276,16 @@ function HangingPhotos({ photos = [] }) {
         rotation = rightWallPositions[rightIndex].rot
       }
       
-      // Try different image extensions
+      // Get the image URL from imported photos
+      // Try different extensions
       let imageUrl = null
-      try {
-        // Use dynamic import for Vite asset handling
-        imageUrl = `/src/assets/photo${photoNum}.jpg`
-      } catch (e) {
-        imageUrl = null
+      const extensions = ['jpg', 'jpeg', 'png', 'webp']
+      for (const ext of extensions) {
+        const key = `../assets/photo${photoNum}.${ext}`
+        if (importedPhotos[key]) {
+          imageUrl = importedPhotos[key]
+          break
+        }
       }
       
       photoData.push({

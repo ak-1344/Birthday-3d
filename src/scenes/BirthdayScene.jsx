@@ -26,6 +26,7 @@ function BirthdayScene() {
   const [candlesBlown, setCandlesBlown] = useState(false)
   const [showIntroOverlay, setShowIntroOverlay] = useState(true)
   const [showLetterZoom, setShowLetterZoom] = useState(false)
+  const [letterClicked, setLetterClicked] = useState(false)
   const [isLitUp, setIsLitUp] = useState(false)
   const cakeRef = useRef()
 
@@ -49,6 +50,7 @@ function BirthdayScene() {
   const handleLetterClick = (e) => {
     e.stopPropagation()
     setShowLetterZoom(true)
+    setLetterClicked(true)
   }
 
   const handleCloseLetterZoom = () => {
@@ -97,6 +99,7 @@ function BirthdayScene() {
           <Environment 
             showConfetti={candlesBlown} 
             onLetterClick={handleLetterClick}
+            letterClicked={letterClicked}
             isLitUp={isLitUp}
           />
           

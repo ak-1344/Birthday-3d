@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### 🐛 Fixed
+- Fixed image loading issue where photos in `src/assets/` weren't displaying on hanging photo frames or in zoomed view
+- Resolved variable name collision in `HangingPhotos.jsx` that prevented images from loading correctly
+- Fixed zoomed photo modal to use `<img>` tag instead of CSS background for better compatibility with Vite's asset handling
+
+### ✨ Added
+- "Read Me" button now disappears after clicking on the birthday letter for cleaner UI
+- Improved image handling with proper Vite `import.meta.glob` integration
+
+### 🔧 Changed
+- Migrated configuration from `.env` file to `src/data.ts` for better TypeScript support
+- Enhanced photo loading with support for multiple image formats (jpg, jpeg, png, webp)
+- Updated state management to track letter interaction for better UX
+
 ## [1.0.0] - 2025-12-02
 
 ### 🎉 Initial Open Source Release

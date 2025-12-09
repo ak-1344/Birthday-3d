@@ -43,20 +43,21 @@ cd Birthday-3d
 npm install
 ```
 
-3. **Copy the environment template:**
-```bash
-cp .env.example .env
+3. **Personalize the configuration:**
+
+Edit `src/data.ts` with your customization:
+
+```typescript
+export const data = {
+  personName: 'John',
+  personAge: 25,
+  birthdayMessage: 'Wishing you a day filled with happiness!',
+  photoCount: 6,
+  candleCount: 5, // Optional: defaults to age if not specified
+};
 ```
 
-4. **Edit `.env` file with your personalization:**
-```env
-VITE_PERSON_NAME=John
-VITE_PERSON_AGE=25
-VITE_BIRTHDAY_MESSAGE=Wishing you a day filled with happiness!
-VITE_PHOTO_COUNT=6
-```
-
-5. **Add your photos to `src/assets/`:**
+4. **Add your photos to `src/assets/`:**
    - Name them: `photo1.jpg`, `photo2.jpg`, `photo3.jpg`, etc.
    - See `src/assets/README.md` for detailed instructions
    - Supported formats: `.jpg`, `.png`, `.webp`
@@ -121,23 +122,22 @@ This is a **fully customizable birthday template**! Personalize every aspect for
 
 ### Quick Customization
 
-Edit the `.env` file to personalize:
+Edit the `src/data.ts` file to personalize:
 
-| Variable | Description | Example |
+| Property | Description | Example |
 |----------|-------------|---------|
-| `VITE_PERSON_NAME` | Birthday person's name | `Alex` |
-| `VITE_PERSON_AGE` | Person's age (affects candle count) | `25` |
-| `VITE_BIRTHDAY_MESSAGE` | Custom intro message | `Wishing you joy!` |
-| `VITE_PHOTO_COUNT` | Number of photos to display | `6` |
-| `VITE_CAKE_TIERS` | Number of cake tiers (optional) | `3` |
-| `VITE_CANDLE_COUNT` | Override candle count (optional) | Leave empty to use age |
+| `personName` | Birthday person's name | `'Alex'` |
+| `personAge` | Person's age (affects candle count) | `25` |
+| `birthdayMessage` | Custom intro message | `'Wishing you joy!'` |
+| `photoCount` | Number of photos to display (max 11) | `6` |
+| `candleCount` | Override candle count (optional) | `5` (defaults to age if not set) |
 
 ### Adding Custom Photos
 
 1. Place photos in `src/assets/` folder
 2. Name them sequentially: `photo1.jpg`, `photo2.jpg`, `photo3.jpg`, etc.
-3. Set `VITE_PHOTO_COUNT` in `.env` to match the number of photos
-4. Restart dev server to see changes
+3. Set `photoCount` in `src/data.ts` to match the number of photos
+4. Save the file (changes auto-reload with Vite)
 
 📖 **Detailed guide**: See [CUSTOMIZATION_GUIDE.md](CUSTOMIZATION_GUIDE.md) for step-by-step instructions, examples, and troubleshooting.
 
@@ -160,15 +160,16 @@ Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md)
 [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/ak-1344/Birthday-3d)
 
 1. Click the "Deploy" button above
-2. Configure environment variables in Vercel dashboard
-3. Add your photos to the repository before deployment
+2. Edit `src/data.ts` with your personalization before deployment
+3. Add your photos to `src/assets/` in the repository before deployment
 
 ### Deploy to Netlify
 
 1. Fork this repository
-2. Connect your fork to Netlify
-3. Set environment variables in Netlify dashboard
-4. Deploy!
+2. Edit `src/data.ts` with your personalization
+3. Add your photos to `src/assets/`
+4. Connect your fork to Netlify
+5. Deploy!
 
 ### Deploy to GitHub Pages
 

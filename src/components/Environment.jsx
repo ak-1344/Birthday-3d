@@ -96,7 +96,7 @@ function GiftBox({ position, size = [0.25, 0.25, 0.25], color = "#e74c3c", ribbo
 }
 
 // Birthday letter/card on table - lying flat
-function BirthdayLetter({ position, onClick }) {
+function BirthdayLetter({ position, onClick, letterClicked = false }) {
   const [hovered, setHovered] = useState(false)
   
   return (
@@ -154,16 +154,17 @@ function BirthdayLetter({ position, onClick }) {
         <meshStandardMaterial color="#f5f0e8" roughness={0.5} side={THREE.DoubleSide} />
       </mesh>
 
-      {/* "Read Me" Speech Bubble */}
-      <Html
-        position={[0.15, 0.25, 0.02]}
-        center
-        distanceFactor={1}
-        style={{
-          pointerEvents: 'none',
-          userSelect: 'none'
-        }}
-      >
+      {/* "Read Me" Speech Bubble - only show if not clicked yet */}
+      {!letterClicked && (
+        <Html
+          position={[0.15, 0.25, 0.02]}
+          center
+          distanceFactor={1}
+          style={{
+            pointerEvents: 'none',
+            userSelect: 'none'
+          }}
+        >
         <div
           style={{
             position: 'relative',
@@ -208,6 +209,7 @@ function BirthdayLetter({ position, onClick }) {
           `}
         </style>
       </Html>
+      )}
     </group>
   )
 }
@@ -654,7 +656,7 @@ function PartyLights() {
   )
 }
 
-function Environment({ showConfetti = false, onLetterClick, isLitUp = false }) {
+function Environment({ showConfetti = false, onLetterClick, letterClicked = false, isLitUp = false }) {
   const audioRef = useRef(null)
   const [isPlaying, setIsPlaying] = useState(false)
   
@@ -717,7 +719,7 @@ function Environment({ showConfetti = false, onLetterClick, isLitUp = false }) {
       <Flower position={[-0.6, -0.06, -0.35]} color="#e67e22" />
       
       {/* Birthday paper on RIGHT side of cake (lying flat) */}
-      <BirthdayLetter position={[0.7, -0.06, 0]} onClick={onLetterClick} />
+      <BirthdayLetter position={[0.7, -0.06, 0]} onClick={onLetterClick} letterClicked={letterClicked} />
       
       {/* Hanging lamp with dramatic spotlight */}
       <HangingLamp />
