@@ -403,52 +403,18 @@ function Shelf({ position }) {
   )
 }
 
-// Small Music System
-function SmallMusicSystem({ position, audioRef, isPlaying, setIsPlaying, showMusicButton, setShowMusicButton }) {
-  const [hovered, setHovered] = useState(false)
-  
-  const handleClick = (e) => {
-    e.stopPropagation()
-    
-    if (!audioRef.current) {
-      // Initialize audio on first click
-      audioRef.current = new Audio(birthdayMusic)
-      audioRef.current.loop = true
-      audioRef.current.volume = 0.5
-    }
-    
-    if (isPlaying) {
-      audioRef.current.pause()
-      setIsPlaying(false)
-    } else {
-      audioRef.current.play().catch(err => {
-        console.log('Audio play failed:', err)
-      })
-      setIsPlaying(true)
-    }
-  }
-  
-  const handleStopMusic = () => {
-    if (audioRef.current) {
-      audioRef.current.pause()
-      setIsPlaying(false)
-    }
-    setShowMusicButton(false)
-  }
-  
+// Small Music System (Decorative only)
+function SmallMusicSystem({ position }) {
   return (
     <group 
       position={position} 
       rotation={[0, Math.PI / 4, 0]}
-      onClick={handleClick}
-      onPointerOver={() => setHovered(true)}
-      onPointerOut={() => setHovered(false)}
     >
       {/* Main unit */}
       <mesh castShadow receiveShadow position={[0, 0.25, 0]}>
         <boxGeometry args={[0.6, 0.45, 0.4]} />
         <meshStandardMaterial 
-          color={hovered ? "#2a2a2a" : "#1a1a1a"} 
+          color="#1a1a1a" 
           roughness={0.3} 
         />
       </mesh>
@@ -459,57 +425,11 @@ function SmallMusicSystem({ position, audioRef, isPlaying, setIsPlaying, showMus
         <meshStandardMaterial color="#333333" roughness={0.5} />
       </mesh>
       
-      {/* Display/LED - changes color when playing */}
+      {/* Display/LED */}
       <mesh position={[0, 0.42, 0.21]}>
         <planeGeometry args={[0.15, 0.03]} />
-        <meshBasicMaterial 
-          color={isPlaying ? "#ff4444" : "#00ff88"}
-        />
+        <meshBasicMaterial color="#00ff88" />
       </mesh>
-      
-      {/* Hover indicator */}
-      {hovered && (
-        <mesh position={[0, 0.2, 0.2]}>
-          <ringGeometry args={[0.15, 0.17, 32]} />
-          <meshBasicMaterial color="#ffffff" transparent opacity={0.5} />
-        </mesh>
-      )}
-      
-      {/* Stop music button overlay */}
-      {showMusicButton && (
-        <Html position={[0, 0.6, 0]} center>
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              handleStopMusic()
-            }}
-            style={{
-              padding: '8px 16px',
-              backgroundColor: 'rgba(255, 68, 68, 0.9)',
-              color: 'white',
-              border: '2px solid rgba(255, 255, 255, 0.3)',
-              borderRadius: '8px',
-              cursor: 'pointer',
-              fontSize: '12px',
-              fontFamily: 'Georgia, serif',
-              fontWeight: 'bold',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-              transition: 'all 0.3s ease',
-              whiteSpace: 'nowrap'
-            }}
-            onMouseEnter={(e) => {
-              e.target.style.backgroundColor = 'rgba(255, 30, 30, 1)'
-              e.target.style.transform = 'scale(1.05)'
-            }}
-            onMouseLeave={(e) => {
-              e.target.style.backgroundColor = 'rgba(255, 68, 68, 0.9)'
-              e.target.style.transform = 'scale(1)'
-            }}
-          >
-            🔇 Stop Music
-          </button>
-        </Html>
-      )}
     </group>
   )
 }
@@ -874,6 +794,11 @@ function Environment({ showConfetti = false, onLetterClick, letterClicked = fals
       {/* Decorative shelves on side walls */}
       <Shelf position={[-5.85, 1.5, -3]} />
       <Shelf position={[5.85, 1.5, 2]} />
+      
+      {/* Music System stack in left-back corner (Decorative) */}
+      <SmallMusicSystem position={[-5.4, -0.95, -8.4]} />
+      <SmallMusicSystem position={[-4.9, -0.95, -8.7]} />
+      <SmallMusicSystem position={[-5.15, -0.45, -8.55]} />
       
       {/* Confetti (only when candles blown) */}
       {showConfetti && <Confetti count={80} />}
