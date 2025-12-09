@@ -314,7 +314,7 @@ function SmallMusicSystem({ position, audioRef, isPlaying, setIsPlaying }) {
     
     if (!audioRef.current) {
       // Initialize audio on first click
-      audioRef.current = new Audio('/src/assets/birthday-music.mp3')
+      audioRef.current = new Audio('/birthday-music.mp3')
       audioRef.current.loop = true
       audioRef.current.volume = 0.5
     }
@@ -710,7 +710,7 @@ function Environment({ showConfetti = false, onLetterClick, letterClicked = fals
       <GiftBox position={[-0.75, -0.06, 0.3]} size={[0.2, 0.2, 0.2]} color="#e74c3c" ribbonColor="#ffd700" />
       <GiftBox position={[-0.9, -0.06, -0.2]} size={[0.25, 0.18, 0.25]} color="#9b59b6" ribbonColor="#ffffff" />
       <GiftBox position={[-0.65, -0.06, -0.5]} size={[0.18, 0.25, 0.18]} color="#3498db" ribbonColor="#ff69b4" />
-      <GiftBox position={[-0.85, -0.06, -0.42]} size={[0.18, 0.25, 0.18]} color="#3498db" ribbonColor="#062e22ff" />
+      <GiftBox position={[-0.85, -0.06, -0.42]} size={[0.18, 0.25, 0.18]} color="#3498db" ribbonColor="#062e22" />
       
       {/* Flowers on LEFT side with gifts */}
       <Flower position={[-0.55, -0.06, 0.15]} color="#ff69b4" />
