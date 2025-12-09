@@ -1,8 +1,9 @@
 import { motion, AnimatePresence } from 'framer-motion'
+import { data } from '../data'
 
 function IntroOverlay({ isVisible, onSkip }) {
-  const personName = import.meta.env.VITE_PERSON_NAME || 'Friend'
-  const birthdayMessage = import.meta.env.VITE_BIRTHDAY_MESSAGE || 'Welcome to your special day!'
+  const personName = data.personName
+  const birthdayMessage = data.birthdayMessage
   
   return (
     <AnimatePresence>

@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 import { useFrame, useLoader } from '@react-three/fiber'
 import { Html, Text } from '@react-three/drei'
 import * as THREE from 'three'
+import { data } from '../data'
 
 function Photo({ position, rotation = [0, 0, 0], caption, index, onZoom, isZoomed, imageUrl }) {
   const groupRef = useRef()
@@ -198,8 +199,8 @@ function ZoomedPhoto({ photo, onClose }) {
 function HangingPhotos({ photos = [] }) {
   const [zoomedIndex, setZoomedIndex] = useState(null)
   
-  // Get total photo count from env
-  const totalPhotoCount = parseInt(import.meta.env.VITE_PHOTO_COUNT) || 5
+  // Get total photo count from data
+  const totalPhotoCount = data.photoCount || 5
   
   // Generate photo data with dynamic image loading
   const generatePhotoData = () => {

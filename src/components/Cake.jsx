@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { data } from '../data'
 
 function Candle({ position, isLit }) {
   const flameRef = useRef()
@@ -133,9 +134,9 @@ function SmokeParticle({ delay, speed, offset, startY }) {
 }
 
 function Cake({ position = [0, 0, 0], onCandlesBlown }) {
-  // Get candle count from env (defaults to age, or 5 if not set)
-  const age = parseInt(import.meta.env.VITE_PERSON_AGE) || 5
-  const candleCount = parseInt(import.meta.env.VITE_CANDLE_COUNT) || age
+  // Get candle count from data (defaults to age, or 5 if not set)
+  const age = data.personAge || 5
+  const candleCount = data.candleCount || age
   
   // Generate candle positions in a circle
   const generateCandlePositions = (count) => {

@@ -1,10 +1,11 @@
 import { Html } from '@react-three/drei'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useState } from 'react'
+import { data } from '../data'
 
 function LetterZoom({ isVisible, onClose }) {
-  const personName = import.meta.env.VITE_PERSON_NAME || 'Friend'
-  const birthdayMessage = import.meta.env.VITE_BIRTHDAY_MESSAGE || 'Wishing you a day filled with happiness and a year filled with joy!'
+  const personName = data.personName
+  const birthdayMessage = data.birthdayMessage
   const [isDragging, setIsDragging] = useState(false)
   
   if (!isVisible) return null
