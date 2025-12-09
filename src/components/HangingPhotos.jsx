@@ -119,8 +119,6 @@ function ZoomedPhoto({ photo, onClose }) {
     <Html
       center
       style={{
-        width: '80vw',
-        maxWidth: '600px',
         pointerEvents: 'auto'
       }}
     >
@@ -132,14 +130,13 @@ function ZoomedPhoto({ photo, onClose }) {
           boxShadow: '0 25px 50px rgba(0,0,0,0.5)',
           textAlign: 'center',
           color: 'white',
-          border: '2px solid rgba(255,215,0,0.3)'
+          border: '2px solid rgba(255,215,0,0.3)',
+          maxWidth: '90vw'
         }}
         onClick={(e) => e.stopPropagation()}
       >
         <div
           style={{
-            width: '100%',
-            height: '300px',
             background: !photo.imageUrl ? `linear-gradient(45deg, ${photo.color}, ${photo.colorAlt})` : 'transparent',
             borderRadius: '12px',
             marginBottom: '20px',
@@ -156,14 +153,19 @@ function ZoomedPhoto({ photo, onClose }) {
               src={photo.imageUrl} 
               alt={photo.caption}
               style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                borderRadius: '12px'
+                maxHeight: '70vh',
+                width: 'auto',
+                height: 'auto',
+                maxWidth: '85vw',
+                objectFit: 'contain',
+                borderRadius: '12px',
+                display: 'block'
               }}
             />
           ) : (
-            '📷'
+            <div style={{ width: '400px', height: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              📷
+            </div>
           )}
         </div>
         <h2 style={{ 

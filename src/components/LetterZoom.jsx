@@ -128,7 +128,8 @@ function LetterZoom({ isVisible, onClose }) {
                 lineHeight: '1.8',
                 color: '#333',
                 marginBottom: '30px',
-                textAlign: 'justify'
+                textAlign: 'justify',
+                whiteSpace: 'pre-line'
               }}>
                 {birthdayMessage}
               </p>
